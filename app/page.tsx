@@ -37,7 +37,7 @@ export default async function Page({ searchParams: { date, price } }: Props) {
       description,
       currency,
       price,
-      "slug": slug.current,      
+      "slug": slug.current,
     }`
   )
 
