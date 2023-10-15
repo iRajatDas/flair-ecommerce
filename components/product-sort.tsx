@@ -27,14 +27,16 @@ const sortOptions = [
 ]
 
 interface ProductSortProps {
-  
+
 }
 
 export function ProductSort({}: ProductSortProps) {
   const router = useRouter()
 
   const onSelectChange = (selectedSort: string) => {
-    router.replace(selectedSort)
+    router.replace(selectedSort, {
+      scroll: false
+    })
   }
 
   return (
