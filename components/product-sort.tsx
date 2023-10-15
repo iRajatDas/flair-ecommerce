@@ -26,14 +26,30 @@ const sortOptions = [
   { name: "Price, high to low", value: "/?price=desc" },
 ]
 
-export function ProductSort() {
+interface ProductSortProps {
+  
+}
+
+export function ProductSort({}: ProductSortProps) {
+  const router = useRouter()
+
+  const onSelectChange = (selectedSort: string) => {
+    router.replace(selectedSort)
+  }
+
   return (
     <div className="flex items-center">
-      <Select>
+      <Select onValueChange={onSelectChange}>
         <SelectTrigger className="sm:w-[180px]">
           <SelectValue placeholder="Sort By" />
         </SelectTrigger>
-        <SelectContent>Sort Options</SelectContent>
+        <SelectContent>
+          {sortOptions.map((option) => (
+            <SelectItem key={option.name} value={option.value}>
+              {option.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
       </Select>
       <Sheet>
         <SheetContent className="w-[300px]">
