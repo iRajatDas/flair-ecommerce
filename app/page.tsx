@@ -1,45 +1,55 @@
-import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
+import { client } from "@/sanity/lib/client"
+import { groq } from "next-sanity"
 
-
-
-import { SanityProduct } from "@/config/inventory";
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
-import { ProductFilters } from "@/components/product-filters";
-import { ProductGrid } from "@/components/product-grid";
-import { ProductSort } from "@/components/product-sort";
-
-
-
-
+import { SanityProduct } from "@/config/inventory"
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
+import { ProductFilters } from "@/components/product-filters"
+import { ProductGrid } from "@/components/product-grid"
+import { ProductSort } from "@/components/product-sort"
 
 interface Props {
   searchParams: {
-    date?: string
+    date?: "asc" | "desc"
     price?: string
+    color?: string
+    category?: string
+    size?: string
   }
 }
 
-export default async function Page({ searchParams: { date, price } }: Props) {
+async function fetchProducts(
+  filter: string,
+  order: string
+): Promise<SanityProduct[]> {
+  return await client.fetch<SanityProduct[]>(groq`${filter} ${order} {
+    _id,
+    _createdAt,
+    name,
+    sku,
+    images,
+    description,
+    currency,
+    price,
+    "slug": slug.current,
+  }`)
+}
+
+export default async function Page({
+  searchParams: { date = "desc", price, color, category, size },
+}: Props) {
   const priceOrder = price ? `| order(price ${price})` : ""
   const dateOrder = date ? `| order(_createdAt)` : ""
 
   const order = `${priceOrder}${dateOrder}`
 
-  const products = await client.fetch<SanityProduct[]>(
-    groq`*[_type == "product"] ${order} {
-      _id,
-      _createdAt,
-      name,
-      sku,
-      images,
-      description,
-      currency,
-      price,
-      "slug": slug.current,
-    }`
-  )
+  const productFilter = `_type == "product"`
+  const colorFilter = color ? `&& "${color}" in colors` : ""
+  const categoryFilter = category ? `&& "${category}" in categories` : ""
+  const sizeFilter = size ? `&& "${size}" in sizes` : ""
+  const filter = `*[${productFilter}${colorFilter}${sizeFilter}${categoryFilter}]`
+
+  const products = await fetchProducts(filter, order)
 
   return (
     <div>

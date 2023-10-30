@@ -63,7 +63,18 @@ export function ProductFilters() {
             <AccordionTrigger>
               <span>
                 {section.name}{" "}
-                <span className="ml-1 text-xs font-extrabold uppercase text-gray-400"></span>
+                <span className="ml-1 text-xs font-extrabold uppercase text-gray-400">
+                  {/* name of selected filter eg: (Bags) */}
+                  {searchValues
+                    .filter(([key]) => key === section.id)
+                    .map(([, value]) => {
+                      const option = section.options.find(
+                        (option) => option.value === value
+                      )
+                      return `(${option?.label})`
+                    })
+                    .join(", ")}
+                </span>
               </span>
             </AccordionTrigger>
             <AccordionContent>
