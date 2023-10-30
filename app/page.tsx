@@ -15,6 +15,7 @@ interface Props {
     color?: string
     category?: string
     size?: string
+    search?: string
   }
 }
 
@@ -36,7 +37,7 @@ async function fetchProducts(
 }
 
 export default async function Page({
-  searchParams: { date = "desc", price, color, category, size },
+  searchParams: { date = "desc", price, color, category, size, search },
 }: Props) {
   const priceOrder = price ? `| order(price ${price})` : ""
   const dateOrder = date ? `| order(_createdAt)` : ""
@@ -47,7 +48,9 @@ export default async function Page({
   const colorFilter = color ? `&& "${color}" in colors` : ""
   const categoryFilter = category ? `&& "${category}" in categories` : ""
   const sizeFilter = size ? `&& "${size}" in sizes` : ""
-  const filter = `*[${productFilter}${colorFilter}${sizeFilter}${categoryFilter}]`
+  const searchFilter = search ? `&& name match "${search}"` : ""
+
+  const filter = `*[${productFilter}${colorFilter}${sizeFilter}${categoryFilter}${searchFilter}]`
 
   const products = await fetchProducts(filter, order)
 
