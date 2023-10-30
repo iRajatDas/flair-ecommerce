@@ -1,14 +1,4 @@
-import {
-  JetBrains_Mono as FontMono,
-  Plus_Jakarta_Sans as FontSans,
-} from "next/font/google"
+import { GeistMono as FontMono, GeistSans as FontSans } from "geist/font"
 
-export const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-})
-
-export const fontMono = FontMono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-})
+export const fontSans = FontSans
+export const fontMono = FontMono
